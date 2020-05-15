@@ -24,6 +24,7 @@ function matchFieldNames(databaseData) {
       logicLabelFieldNames.forEach(logicLableFieldName => {
         if (logicLableFieldName !== fieldName) {
           resultsArr.push(`Field #${i+1}: ${fieldName} does not match ${logicLableFieldName}`);
+          // TODO: This message could be improved to show what the original logic label was.
         }
       });
     }
