@@ -11,7 +11,8 @@
 const fileHoldingData = `Data_To_Validate`;
 const fileReferenceJSON = `file_reference.json`;
 // This is the request and path to the JSON file that has the user provided data.
-const dataReference = require(`./${fileHoldingData}/${fileReferenceJSON}`);
+const dataReference = require(`./../${fileHoldingData}/${fileReferenceJSON}`);
+
 
 // used when the is a problem between the fileHoldingData and fileReferenceJSON.
 const fileNotFoundMessage = file => console.log(`File Not Found
@@ -25,11 +26,11 @@ Cannot find a file in the ${fileHoldingData} folder with the name ${file}. Pleas
 const databaseDataJSON = type => {
   if (type === "db") {
     try {
-      return require(`./${fileHoldingData}/${dataReference.database_data_csv_file}`);
+      return require(`./../${fileHoldingData}/${dataReference.database_data_csv_file}`);
     } catch(error) {fileNotFoundMessage(dataReference.database_data_csv_file)}
   } else if (type === "spec") {
     try {
-      return require(`./${fileHoldingData}/${dataReference.spec_data_csv_file}`);
+      return require(`./../${fileHoldingData}/${dataReference.spec_data_csv_file}`);
     } catch(error) {fileNotFoundMessage(dataReference.spec_data_csv_file)}
   }
 }
