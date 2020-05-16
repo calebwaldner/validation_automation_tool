@@ -8,7 +8,7 @@ const patternForFirstFieldName = /(?<=(.* - ))\w*(?=_)/g
 
 /**
  * Finds discrepancies between the field name in the field column and the logic label field name. Posts results to the console.
- * @param {json} databaseData - the standard format database json
+ * @param {json} databaseData - the "standard format" database json
  */
 function matchFieldNames(databaseData) {
   const resultsArr = [];

@@ -2,10 +2,8 @@
 
 
 /***************************************************
- * FORM JSON FILE REFERENCE 
- * 
- * Place the form data JSON file reference below
-*/
+ * FORM CSV FILE REFERENCE 
+ ***************************************************/
 
 // These are references to the titles of folders and files. If one of the folder or files change, just change the name here.
 const fileHoldingData = `Data_To_Validate`;
@@ -15,26 +13,25 @@ const dataReference = require(`./../${fileHoldingData}/${fileReferenceJSON}`);
 
 
 // used when the is a problem between the fileHoldingData and fileReferenceJSON.
-const fileNotFoundMessage = file => console.log(`File Not Found
-Cannot find a file in the ${fileHoldingData} folder with the name ${file}. Please double check that the .csv file name in the ${fileHoldingData} folder and the file name in the ${fileReferenceJSON} JSON file match.`);
+const fileNotFoundMessage = (error, file) => {
+  if (error.message === "File does not exist. Check to make sure the file path to your csv is correct.") {
+    console.log(`File Not Found
+    Cannot find a file in the ${fileHoldingData} folder with the name ${file}. Please double check that the .csv file name in the ${fileHoldingData} folder and the file name in the ${fileReferenceJSON} JSON file match.`);
+  }
+};
 
+// Sends the correct path, depending on the parameter
 const databaseDataCSV = type => {
   if (type === "db") {
-    try {
-      return `./../${fileHoldingData}/${dataReference.database_data_csv_file}`;
-    } catch(error) {fileNotFoundMessage(dataReference.database_data_csv_file)}
+    return `./../${fileHoldingData}/${dataReference.database_data_csv_file}`;
   } else if (type === "spec") {
-    try {
-      return `./../${fileHoldingData}/${dataReference.spec_data_csv_file}`;
-    } catch(error) {fileNotFoundMessage(dataReference.spec_data_csv_file)}
+    return `./../${fileHoldingData}/${dataReference.spec_data_csv_file}`;
   }
 }
 
-/***************************************************/
-
 
 /***************************************************
- * VALIDATION DEPENDENT MODULES
+ * VALIDATION MODULES
 ***************************************************/
 
 const matchFeldNamesLabelNames = require("./validation_modules/match_field_name_label_name");
@@ -60,9 +57,6 @@ class Library {
 
 }
 
-// // instantiation of the library, which is used to dynamically call all the functions
-// const library = new Library(databaseDataJSON("db"), databaseDataJSON("spec"));
-
 
 /***************************************************
  * Processing Command Line
@@ -72,43 +66,59 @@ const csvFilePathDB = databaseDataCSV("db");
 const csvFilePathSpec = databaseDataCSV("spec");
 const csv = require('./.gitignore/node_modules/csvtojson');
 
-csv() // gets db csv file and returns a promise of JSON data
-.fromFile(csvFilePathDB)
-.then((dbJSON) => {
-    
-  csv() // gets spec csv file and returns a promise of JSON data
-  .fromFile(csvFilePathSpec)
-  .then((specJSON) => {
-
-      /************************* JSON SCOPE **************************
-      * In this scop both the Database and Spec CSV files have been transfered to JSON.
-      * Because the csvtojson module returns a promise, we must call all validation modules within the promise
-      * Edit: I believe this could be altered to use the "done" event, which would fire once all data is in. Then I could use a global variable to capture the data\ and on the 'done' event do everything else */
-
-      // instantiation of the library, which is used to dynamically call all the functions
-      const library = new Library(dbJSON, specJSON);
-
-
-      const commandLineArgument = process.argv.splice(2);
-      try {
-        library[commandLineArgument](); // dynamically calls a method of the library object
-      } catch(error) {
-        console.log(error);
-        if (error.message === "Cannot read property 'forEach' of undefined") {return}; // this is the error message from a problem with the files. There are other error messages for that.
-        console.log("Not a function in the validation library")
-      }
-  })
+// gets db csv file and returns a promise of JSON data
+csv() // Part of csvtojson module
+.on('error',(err)=>{
+  fileNotFoundMessage(err, dataReference.database_data_csv_file); //custom error message for miss matched files
 })
+.fromFile(csvFilePathDB) // Part of csvtojson module
+.then((dbJSON) => { // Part of csvtojson module
+    
+  // gets spec csv file and returns a promise of JSON data  
+  csv() // Part of csvtojson module
+  .on('error',(err)=>{
+    fileNotFoundMessage(err, dataReference.spec_data_csv_file); //custom error message for miss matched files
+  })
+  .fromFile(csvFilePathSpec) // Part of csvtojson module
+  .then((specJSON) => { // Part of csvtojson module
+
+    /************************* JSON SCOPE **************************
+    * In this scope both the Database and Spec CSV files have been transfered to JSON.
+    * Because the csvtojson module returns a promise, we must call all validation modules within the promise
+    * Edit: I believe this could be altered to use the "done" event, which would fire once all data is in. Then I could use a global variable to capture the data\ and on the 'done' event do everything else */
+
+    // instantiation of the library, which is used to dynamically call all the functions
+    const library = new Library(dbJSON, specJSON);
+
+    // Gets the command line arguments
+    const commandLineArgument = process.argv.splice(2);
+
+    // Tries to run the commend like argument as a method. If it matches one of the methods in the library object, then it will run. If not there is a custom error messege thrown.
+    try {
+      library[commandLineArgument](); // dynamically calls a method of the library object
+    } catch(error) {
+      if (error.message === "Cannot read property 'forEach' of undefined") {return}; // this is the error message from a problem with the files. There are other error messages for that.
+      console.log("Not a function in the validation library")
+    }
+
+    // TESTING AREA START
+
+
+    console.log(dbJSON);
 
 
 
 
-/***************************************************
- * Required
-***************************************************/
+    // TESTING AREA END
 
-// const allRequired = formJSON.filter(field => field["Required"]);
-
+  })
+  .catch(error => {
+    console.log(`Error Message: ${error.message}`);
+  });
+})
+.catch(error => {
+  console.log(`Error Message: ${error.message}`);
+});
 
 
 
