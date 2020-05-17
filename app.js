@@ -39,6 +39,8 @@ const matchSpecFieldNamesAndLabelNames = require("./validation_modules/check_spe
 
 const checkSpecColumnHeaders = require("./validation_modules/check_spec_column_headers");
 
+const listFields = require("./validation_modules/list-fields");
+
 
 
 /***************************************************
@@ -47,9 +49,10 @@ const checkSpecColumnHeaders = require("./validation_modules/check_spec_column_h
 
 // constructor takes the standard format JSON data
 class Library {
-  constructor(databaseData, specData) {
+  constructor(databaseData, specData, args) {
     this.databaseData = databaseData;
     this.specData = specData;
+    this.arguments = args;
   }
 
   // Below are all the different validation functions. They are called out of the library object dynamically and should be given the correct arguments depending on what the functions require.
@@ -66,6 +69,13 @@ class Library {
     matchSpecFieldNamesAndLabelNames.run(this.databaseData, this.specData);
   }
 
+  listDBFields() {
+    listFields.listDB(this.databaseData, this.arguments);
+  }
+
+  listSpecFields() {
+    listFields.listSpec(this.specData, this.arguments);
+  }
   
 
 }
@@ -100,11 +110,13 @@ csv() // Part of csvtojson module
     * Because the csvtojson module returns a promise, we must call all validation modules within the promise
     * Edit: I believe this could be altered to use the "done" event, which would fire once all data is in. Then I could use a global variable to capture the data\ and on the 'done' event do everything else */
 
-    // instantiation of the library, which is used to dynamically call all the functions
-    const library = new Library(dbJSON, specJSON);
-
     // Gets the command line arguments
-    const commandLineArgument = process.argv.splice(2);
+    const commandLineArguments = process.argv.splice(2);
+    // console.log(commandLineArguments) // for testing
+
+    // instantiation of the library, which is used to dynamically call all the functions
+    const library = new Library(dbJSON, specJSON, commandLineArguments.splice(1));
+
 
     // Runs a check on the spec column headers first, and if there is a problem the library function will not run
     try {
@@ -112,7 +124,7 @@ csv() // Part of csvtojson module
     
       // Tries to run the commend like argument as a method. If it matches one of the methods in the library object, then it will run. If not there is a custom error messege thrown.
       try {
-        library[commandLineArgument](); // dynamically calls a method of the library object
+        library[commandLineArguments[0]](); // dynamically calls a method of the library object based off the first command line argument
       } catch(error) {
         if (error.message === "Cannot read property 'forEach' of undefined") {return}; // this is the error message from a problem with the files. There are other error messages for that.
         console.log("error-code:1- ", error.message);

@@ -9,16 +9,17 @@ function checkSpecDBFieldNames(dbData, specData) {
 
   const specResultsTest = specData
     .filter(field => !dbFieldNames.includes(field.Field)) // if Spec field name cannot be found in the list of DB field names
-    .map(field => `${field.Field} - ${field.Type}`)
-    console.log(`\nThese field names from the Spec are not found in the Database:\n `, specResultsTest);
+    // .map(field => `${field.Field} - ${field.Type}`)
+    console.log(`\nThese field names from the Spec are not found in the Database:`);
+    console.table(specResultsTest, ["Field", "Type"])
   
 
   const dbResults = dbData
     .filter(field => !specFieldNames.includes(field["Field Name"])) // if DB field name cannot be found in the list of Spec field names
     .filter(field => field["Conditional Actions"]) // CA must have a value to return truthy. This filters results that have no CAs and wouldn't be in the spec anyway
     .filter(field => field["Field Name"] !== "Field Name") // embedded tables will create these fields
-    .map(field => field["Field Name"])
-  console.log(`\nThese field names from the Database are not found in the Spec:\n `, dbResults);
+  console.log(`\nThese field names from the Database are not found in the Spec:`);
+  console.table(dbResults, ["Field Name"]);
   
 }
     
