@@ -15,8 +15,7 @@ const dataReference = require(`./../${fileHoldingData}/${fileReferenceJSON}`);
 // used when the is a problem between the fileHoldingData and fileReferenceJSON.
 const fileNotFoundMessage = (error, file) => {
   if (error.message === "File does not exist. Check to make sure the file path to your csv is correct.") {
-    console.log(`File Not Found
-    Cannot find a file in the ${fileHoldingData} folder with the name ${file}. Please double check that the .csv file name in the ${fileHoldingData} folder and the file name in the ${fileReferenceJSON} JSON file match.`);
+    console.log(`********************\nFile Not Found\nCannot find a file in the ${fileHoldingData} folder with the name ${file}.\nPlease double check that the .csv file name in the ${fileHoldingData} folder and the file name in the ${fileReferenceJSON} JSON file match.\n********************`);
   }
 };
 
@@ -36,7 +35,7 @@ const databaseDataCSV = type => {
 
 const matchFeldNamesLabelNames = require("./validation_modules/match_field_name_label_name");
 
-const checkSpecFieldNames = require("./validation_modules/check_spec_field_names");
+const matchSpecFieldNamesAndLabelNames = require("./validation_modules/check_spec_db_field_names");
 
 const checkSpecColumnHeaders = require("./validation_modules/check_spec_column_headers");
 
@@ -55,17 +54,19 @@ class Library {
 
   // Below are all the different validation functions. They are called out of the library object dynamically and should be given the correct arguments depending on what the functions require.
 
+  checkSpecColumnHeaders() {
+    checkSpecColumnHeaders.run(this.specData);
+  }
+
   matchFeldNamesLabelNames() {
     matchFeldNamesLabelNames.run(this.databaseData);
   }
 
-  checkSpecFieldNames() {
-    checkSpecFieldNames.run(this.specData);
+  matchSpecFieldNamesAndLabelNames() {
+    matchSpecFieldNamesAndLabelNames.run(this.databaseData, this.specData);
   }
 
-  checkSpecColumnHeaders() {
-    checkSpecColumnHeaders.run(this.specData);
-  }
+  
 
 }
 
@@ -105,21 +106,27 @@ csv() // Part of csvtojson module
     // Gets the command line arguments
     const commandLineArgument = process.argv.splice(2);
 
-    // Tries to run the commend like argument as a method. If it matches one of the methods in the library object, then it will run. If not there is a custom error messege thrown.
+    // Runs a check on the spec column headers first, and if there is a problem the library function will not run
     try {
-      library[commandLineArgument](); // dynamically calls a method of the library object
-    } catch(error) {
-      if (error.message === "Cannot read property 'forEach' of undefined") {return}; // this is the error message from a problem with the files. There are other error messages for that.
-      console.log("error-code:1- ", error.message);
+      library.checkSpecColumnHeaders(specJSON)
+    
+      // Tries to run the commend like argument as a method. If it matches one of the methods in the library object, then it will run. If not there is a custom error messege thrown.
+      try {
+        library[commandLineArgument](); // dynamically calls a method of the library object
+      } catch(error) {
+        if (error.message === "Cannot read property 'forEach' of undefined") {return}; // this is the error message from a problem with the files. There are other error messages for that.
+        console.log("error-code:1- ", error.message);
+      }
+
+    } 
+    catch(error) {
+      console.log(error.message)
     }
 
-    // Runs a check on the spec column headers. If there is a probl
-    try {library.checkSpecColumnHeaders(specJSON)} 
-    catch(error) {}
     
     // TESTING AREA START
 
-    // console.log(dbJSON);
+
 
 
 

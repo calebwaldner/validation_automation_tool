@@ -54,3 +54,11 @@ Below are the header rows for the database CSV. These are the defults from cleni
   High Range,
   Choices
 ]
+
+
+
+** BEST USE **
+Order To Use
+Here is a recommended order to run the apps:
+ 1) checkSpecFieldNames
+  - This checks that the spec field names match the names in the database. Fixing this helps with future apps. 

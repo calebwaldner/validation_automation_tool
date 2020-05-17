@@ -13,7 +13,7 @@ const standardFormatSpec =
   "Logic",
   "Message",
   "Developed",
-  "LogicReview and\nSupporting Document",
+  "Logic Review and\nSupporting Document",
   "N/A",
   "Test Case and\nMethod of Validation",
   "N/A",
@@ -36,7 +36,7 @@ function checkSpecColumnHeaders(specData) {
 
   headers.forEach(header => {
     if (!standardFormatSpec.includes(header)) {
-      throw new Error('Problem with spec headers');
+      throw new Error('Problem with spec headers'); 
     }
   });
 }
