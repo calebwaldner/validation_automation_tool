@@ -2,9 +2,11 @@
 
 function listDBFieldNames(dbFields, argsArr) {
 
-  console.log(`You can add one of these as an argument:\n"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", Required, "Low Range", "High Range", Choices`);
+  //TODO make all these lists of arguments come from the library database.
+
+  console.log(`You can add one of these as an argument:\n"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"`);
   console.table(dbFields, ["Field Name", ...argsArr]);
-  console.log(`You can add one of these as an argument:\n"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", Required, "Low Range", "High Range", Choices`);
+  console.log(`You can add one of these as an argument:\n"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"`);
 
 }
 

@@ -33,7 +33,7 @@ const databaseDataCSV = type => {
  * VALIDATION MODULES
 ***************************************************/
 
-const matchFeldNamesLabelNames = require("./validation_modules/match_field_name_label_name");
+const matchFieldNamesLabelNames = require("./validation_modules/match_field_name_label_name");
 
 const matchSpecFieldNamesAndLabelNames = require("./validation_modules/check_spec_db_field_names");
 
@@ -47,6 +47,42 @@ const listFields = require("./validation_modules/list-fields");
  * Library
 ***************************************************/
 
+// TODO: Use this databse to dynamically call everything needed for this app. Try to make this the only place things need to be edited. Maybe don't need to dynamically call everything, but at least use string interpolation so changes are only needed in the library_database.
+const libraryDatabse = [
+  {
+    name: "checkSpecColumnHeaders",
+    file: "check_spec_column_headers.js",
+    description: "Checks that the column headers in the Spec match the 'Standard Format'",
+    command_line_arguments: [],
+    returns: "Returns a list of column headers that didn't match; otherwise nothing"
+  },
+  {
+    name: "matchFieldNamesLabelNames",
+    file: "match_field_name_label_name.js",
+    description: "Shows a list of fields that have problems with their logic label field names",
+    command_line_arguments: []
+  },
+  {
+    name: "matchSpecFieldNamesAndLabelNames",
+    file: "check_spec_db_field_names.js",
+    description: "Returns a list of field names that should find matches but do not between the spec and the database.",
+    command_line_arguments: []
+  },
+  {
+    name: "listDBFields",
+    file: "list-fields.js",
+    description: "Returns the fields from the database file, can be inhanced with arguments",
+    command_line_arguments: ["Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"]
+  },
+  {
+    name: "listSpecFields",
+    file: "list-fields.js",
+    description: "Returns the fields from the spec file, can be inhanced with arguments",
+    command_line_arguments: ["Field", "Description", "Type", "Logic", "Message", "Developed", "Logic Review and Supporting Document", "N/A", "Test Case and Method of Validation", "N/A", "Result"],
+    returns: ""
+  },
+]
+
 // constructor takes the standard format JSON data
 class Library {
   constructor(databaseData, specData, args) {
@@ -55,14 +91,19 @@ class Library {
     this.arguments = args;
   }
 
+  // For viewing the library database
+  apps() {
+    console.log(libraryDatabse);
+  }
+
   // Below are all the different validation functions. They are called out of the library object dynamically and should be given the correct arguments depending on what the functions require.
 
   checkSpecColumnHeaders() {
     checkSpecColumnHeaders.run(this.specData);
   }
 
-  matchFeldNamesLabelNames() {
-    matchFeldNamesLabelNames.run(this.databaseData);
+  matchFieldNamesLabelNames() {
+    matchFieldNamesLabelNames.run(this.databaseData);
   }
 
   matchSpecFieldNamesAndLabelNames() {
@@ -137,6 +178,7 @@ csv() // Part of csvtojson module
 
     
     // TESTING AREA START
+
 
 
 
