@@ -36,6 +36,10 @@ const databaseDataCSV = type => {
 
 const matchFeldNamesLabelNames = require("./validation_modules/match_field_name_label_name");
 
+const checkSpecFieldNames = require("./validation_modules/check_spec_field_names");
+
+const checkSpecColumnHeaders = require("./validation_modules/check_spec_column_headers");
+
 
 
 /***************************************************
@@ -52,7 +56,15 @@ class Library {
   // Below are all the different validation functions. They are called out of the library object dynamically and should be given the correct arguments depending on what the functions require.
 
   matchFeldNamesLabelNames() {
-    matchFeldNamesLabelNames.run(this.databaseData)
+    matchFeldNamesLabelNames.run(this.databaseData);
+  }
+
+  checkSpecFieldNames() {
+    checkSpecFieldNames.run(this.specData);
+  }
+
+  checkSpecColumnHeaders() {
+    checkSpecColumnHeaders.run(this.specData);
   }
 
 }
@@ -98,13 +110,16 @@ csv() // Part of csvtojson module
       library[commandLineArgument](); // dynamically calls a method of the library object
     } catch(error) {
       if (error.message === "Cannot read property 'forEach' of undefined") {return}; // this is the error message from a problem with the files. There are other error messages for that.
-      console.log("Not a function in the validation library")
+      console.log("error-code:1- ", error.message);
     }
 
+    // Runs a check on the spec column headers. If there is a probl
+    try {library.checkSpecColumnHeaders(specJSON)} 
+    catch(error) {}
+    
     // TESTING AREA START
 
-
-    console.log(dbJSON);
+    // console.log(dbJSON);
 
 
 
@@ -113,11 +128,11 @@ csv() // Part of csvtojson module
 
   })
   .catch(error => {
-    console.log(`Error Message: ${error.message}`);
+    console.log("error-code:2- ", `Error Message: ${error.message}`);
   });
 })
 .catch(error => {
-  console.log(`Error Message: ${error.message}`);
+  console.log("error-code:3- ", `Error Message: ${error.message}`);
 });
 
 

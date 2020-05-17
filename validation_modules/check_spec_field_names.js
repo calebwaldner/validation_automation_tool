@@ -4,7 +4,9 @@
 
 
 
-// Get spec and db json
+function checkSpecFieldNames(specData) {
+
+
 // For each spec field name
   // Find a match in the db
     // If match is found
@@ -15,3 +17,20 @@
 // log the db fields that never got a passing 
 
 
+
+
+console.log(specData);
+
+
+
+
+
+}
+
+
+
+
+
+
+// Export
+module.exports.run = checkSpecFieldNames;
