@@ -43,6 +43,8 @@ const listFields = require("./validation_modules/list-fields");
 
 const checkSpecLogicType = require("./validation_modules/check_spec_logic_type");
 
+const checkRequired = require("./validation_modules/check_required");
+
 
 
 /***************************************************
@@ -92,6 +94,13 @@ const libraryDatabse = [
     command_line_arguments: [],
     returns: ""
   },
+  {
+    name: "checkRequired",
+    file: "check_required.js",
+    description: "",
+    command_line_arguments: [],
+    returns: ""
+  }
 ]
 
 // constructor takes the standard format JSON data
@@ -131,6 +140,10 @@ class Library {
 
   checkSpecLogicType() {
     checkSpecLogicType.run(this.specData);
+  }
+
+  checkRequired() {
+    checkRequired.run(this.databaseData, this.specData, this.arguments);
   }
   
 
