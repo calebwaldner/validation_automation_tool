@@ -41,18 +41,22 @@ const checkSpecColumnHeaders = require("./validation_modules/check_spec_column_h
 
 const listFields = require("./validation_modules/list-fields");
 
+const checkSpecLogicType = require("./validation_modules/check_spec_logic_type");
+
 
 
 /***************************************************
  * Library
 ***************************************************/
 
+// 3 spots require an update to add a new module: the libraryDatabse, the method list for the Library class, and the VALIDATION MODULES section.
+
 // TODO: Use this databse to dynamically call everything needed for this app. Try to make this the only place things need to be edited. Maybe don't need to dynamically call everything, but at least use string interpolation so changes are only needed in the library_database.
 const libraryDatabse = [
   {
     name: "checkSpecColumnHeaders",
     file: "check_spec_column_headers.js",
-    description: "Checks that the column headers in the Spec match the 'Standard Format'",
+    description: "Checks for Spec accuracy. Checks that the column headers in the Spec match the 'Standard Format'",
     command_line_arguments: [],
     returns: "Returns a list of column headers that didn't match; otherwise nothing"
   },
@@ -79,6 +83,13 @@ const libraryDatabse = [
     file: "list-fields.js",
     description: "Returns the fields from the spec file, can be inhanced with arguments",
     command_line_arguments: ["Field", "Description", "Type", "Logic", "Message", "Developed", "Logic Review and Supporting Document", "N/A", "Test Case and Method of Validation", "N/A", "Result"],
+    returns: ""
+  },
+  {
+    name: "checkSpecLogicType",
+    file: "check_spec_logic_type.js",
+    description: "Checks for Spec accuracy. Checks the 'Type' column on the spec that the type values are accurate",
+    command_line_arguments: [],
     returns: ""
   },
 ]
@@ -116,6 +127,10 @@ class Library {
 
   listSpecFields() {
     listFields.listSpec(this.specData, this.arguments);
+  }
+
+  checkSpecLogicType() {
+    checkSpecLogicType.run(this.specData);
   }
   
 

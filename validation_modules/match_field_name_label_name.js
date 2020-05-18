@@ -19,6 +19,8 @@ function matchFieldNames(databaseData) {
     const logicLabelFieldNames = fieldCA.match(patternForFirstFieldName);
     // console.log(i, fieldName, logicLabelFieldNames); // logs all fields and logic lables, used for reference
 
+    // TODO This could be greatly improved to first use a console table. Second, to return two sets of results, the first being a list of names that don't have a proper logic type tag, but their field name might match; and second being those that actually have a problem with the logic lable field name. Also, there needs to be provision for the possibility that both of these errors occured, so if there is a lable with both problems it should apear on both lists
+
     // populates resultsArr with each finding of (label name !== field name)
     if (logicLabelFieldNames !== null) {
       logicLabelFieldNames.forEach(logicLableFieldName => {
