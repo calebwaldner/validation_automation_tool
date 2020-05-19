@@ -60,5 +60,6 @@ Below are the header rows for the database CSV. These are the defults from cleni
 ** BEST USE **
 Order To Use
 Here is a recommended order to run the apps:
- 1) checkSpecFieldNames
-  - This checks that the spec field names match the names in the database. Fixing this helps with future apps. 
+ 1) checkSpecDBFieldNames
+  - This checks that the spec field names match the names in the database and vice-versa. Fixing this helps with future apps. 
+   - It is recommended that this is run first, findings addressed in spec, and rather than waiting for developer to change the spec so you can move forward using the other tools, just update the CSV file and highlight that cell to indicate that there was a change made. DON'T CHANGE THE CVS UNTIL YOU WRITE YOUR FIDINGS AND MAKE NOTES OF YOUR CHANGES

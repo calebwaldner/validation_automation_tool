@@ -45,6 +45,8 @@ const checkSpecLogicType = require("./validation_modules/check_spec_logic_type")
 
 const checkRequired = require("./validation_modules/check_required");
 
+const getQV = require("./validation_modules/get_QV");
+
 
 
 /***************************************************
@@ -78,13 +80,13 @@ const libraryDatabse = [
     name: "listDBFields",
     file: "list-fields.js",
     description: "Returns the fields from the database file, can be inhanced with arguments",
-    command_line_arguments: ["Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"]
+    command_line_arguments: `"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"`
   },
   {
     name: "listSpecFields",
     file: "list-fields.js",
     description: "Returns the fields from the spec file, can be inhanced with arguments",
-    command_line_arguments: ["Field", "Description", "Type", "Logic", "Message", "Developed", "Logic Review and Supporting Document", "N/A", "Test Case and Method of Validation", "N/A", "Result"],
+    command_line_arguments: `"Field", "Description", "Type", "Logic", "Message", "Developed", "Logic Review and Supporting Document", "N/A", "Test Case and Method of Validation", "N/A", "Result"`,
     returns: ""
   },
   {
@@ -97,6 +99,13 @@ const libraryDatabse = [
   {
     name: "checkRequired",
     file: "check_required.js",
+    description: "",
+    command_line_arguments: [],
+    returns: ""
+  },
+  {
+    name: "getQVRange",
+    file: "get_QV.js",
     description: "",
     command_line_arguments: [],
     returns: ""
@@ -144,6 +153,10 @@ class Library {
 
   checkRequired() {
     checkRequired.run(this.databaseData, this.specData, this.arguments);
+  }
+
+  getQV() {
+    getQV.run(this.databaseData, this.specData, this.arguments);
   }
   
 
