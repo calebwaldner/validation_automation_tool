@@ -169,7 +169,7 @@ class Library {
 
 const csvFilePathDB = databaseDataCSV("db");
 const csvFilePathSpec = databaseDataCSV("spec");
-const csv = require('./.gitignore/node_modules/csvtojson');
+const csv = require('./node_modules/csvtojson');
 
 // gets db csv file and returns a promise of JSON data
 csv() // Part of csvtojson module
