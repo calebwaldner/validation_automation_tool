@@ -2,6 +2,8 @@
  * Field Name VS CA Label Name
 ***************************************************/
 
+/*eslint-env node*/
+
 // This matches field names out of the logic labels. 
 const patternForFirstFieldName = /(?<=(.* - ))\w*(?=_)/g 
 
