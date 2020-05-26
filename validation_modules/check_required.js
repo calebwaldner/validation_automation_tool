@@ -1,5 +1,7 @@
+// For ESLint
+/*eslint-env node*/
 
-function checkRequired(dbData, specData, args) {
+function checkRequired(dbData, specData, isCheckpoint = false) {
   
   // Both these functions work the same way.
   /* Here is a breakdown
@@ -14,35 +16,52 @@ function checkRequired(dbData, specData, args) {
   // We run this function with both data sets to insure every scnario of discrepencies is found.
 
   const specResults = specData
-    .filter(specField => /^REQ\s?$/.test(specField.Type)) // uses regex to accomidate for an extra space at the end of "REQ", just in case
-    .filter(specField => !/^Obsolete\s?$/.test(specField.Developed)) // if NOT "Obsolete"
+    .filter(specField => /^REQ\s?$/.test(specField.type)) // uses regex to accomidate for an extra space at the end of "REQ", just in case
+    .filter(specField => !/^Obsolete\s?$/.test(specField.developed)) // if NOT "Obsolete"
     .filter(specField => {
       
       return !(dbData // This filters the db data down to just the row column.
-                  .filter(dbField => dbField.Required === "Yes")
-                  .map(dbField => dbField["Field Name"]))
+                  .filter(dbField => dbField.required)
+                  .map(dbField => dbField.field))
 
-    .includes(specField.Field)
+    .includes(specField.field)
     });
 
 
   const dbResults = dbData
-    .filter(dbField => dbField.Required === "Yes")
+    .filter(dbField => dbField.required)
     .filter(dbField => {
       
       return !(specData // This filters the db data down to just the row column.
-                .filter(specField => /^REQ\s?$/.test(specField.Type))
-                .filter(specField => !/^Obsolete\s?$/.test(specField.Developed))
-                .map(specField => specField.Field))
+                .filter(specField => /^REQ\s?$/.test(specField.type))
+                .filter(specField => !/^Obsolete\s?$/.test(specField.developed))
+                .map(specField => specField.field))
 
-    .includes(dbField["Field Name"])
+    .includes(dbField.field)
     });
+    
 
-  console.log(`\nThese results are Required in the Spec but not in the Database:`)
-  console.table(specResults, ["Field", "Type"]);
-  console.log(`\nThese results are Required in the Database but not in the Spec:`)
-  console.table(dbResults, ["Field Name", "Required"]);
+  //////////// RESULTS ////////////
 
+  // if there are results (results array greater than 0), 
+  if (specResults.length > 0 || dbResults.length > 0) {
+    // if in checkpoint mode, throw an error if this test didn't pass the checkpoint.
+    if (isCheckpoint) {throw Error("A problem with required logic")}
+
+    // results, not in checkpoint mode
+    // spec results
+    console.log(`\nThese results are Required in the Spec but not in the Database:`);
+    console.table(specResults, ["field", "required", "type"]);
+    // db results
+    console.log(`\nThese results are Required in the Database but not in the Spec:`);
+    console.table(dbResults, ["field", "required"]);
+  } else {
+    // results for checkpoint mode
+    if (isCheckpoint) {return true} 
+
+    // not in checkpoint mode
+    console.log(`There are no results!`); // not in checkpoint mode
+  }
 }
 
 

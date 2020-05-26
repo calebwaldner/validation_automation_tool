@@ -1,34 +1,129 @@
 /*eslint-env node*/
 
-function listDBFieldNames(dbData, argsArr) {
+// https://www.npmjs.com/package/tty-table
+const ttyTable = require("./../node_modules/tty-table");
 
-  //TODO make all these lists of arguments come from the library database.
+function listDBFieldNames(dbData) {
 
-  // console.log(`You can add one of these as an argument:\n"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"`);
-  // console.table(dbData, ["Field Name", ...argsArr]);
-  // console.log(`You can add one of these as an argument:\n"Field Name", "Field Label", "Field ID", "Max Length", "Field Type", "Conditional Actions", "Required", "Low Range", "High Range", "Choices"`);
+  // for the tty-Table
+  const options = {
+    borderStyle: "solid",
+    borderColor: "blue",
+    headerAlign: "center",
+    align: "left",
+    color: "white",
+    width: "100%",
+    defaultErrorValue: "-",
+    errorOnNull: true,
+  }
+    // for the tty-Table
+  let header = [
+    {
+      value: "field",
+      width: 30
+    },
+    {
+      value: "label"
+    },
+    {
+      value: "required",
+      width: 32,
+      formatter: function (value) {
+        let str = value ? "Yes" : "No"
+        return (value) ? this.style(str, "green") : 
+          this.style(str, "red")
+      }
+    },
+    {
+      value: "ca"
+    },
+    {
+      value: "logicLabelField",
+      width: 30
+    },
+    {
+      value: "type",
+      width: 30
+    },
+    {
+      value: "message"
+    },
+    {
+      value: "lowRange",
+      width: 32
+    },
+    {
+      value: "highRange",
+      width: 32
+    }
+  ]
 
-  ///// testing
+  let tTable = ttyTable(header, dbData, options).render();
+  console.log(tTable);
+
   
-
-  console.log(dbData);
-
 }
 
 module.exports.listDB = listDBFieldNames;
 
 
 
-function listSpecFieldNames(specData, argsArr) {
+function listSpecFieldNames(specData) {
 
-  // console.log(`You can add one of these as an argument:\n"Field", "Description", "Type", "Logic", "Message", "Developed", "Logic Review and Supporting Document", "N/A", "Test Case and Method of Validation", "N/A", "Result"`);
-  // console.table(specData, ["Field", ...argsArr]);
-  // console.log(`You can add one of these as an argument:\n"Field", "Description", "Type", "Logic", "Message", "Developed", "Logic Review and Supporting Document", "N/A", "Test Case and Method of Validation", "N/A", "Result"`);
+  // for the tty-Table
+  const options = {
+    borderStyle: "solid",
+    borderColor: "blue",
+    headerAlign: "center",
+    align: "left",
+    color: "white",
+    width: "100%",
+    defaultErrorValue: "-",
+    errorOnNull: true,
+  }
+    // for the tty-Table
+  let header = [
+    {
+      value: "field",
+      width: 30
+    },
+    {
+      value: "label"
+    },
+    {
+      value: "required",
+      width: 32,
+      formatter: function (value) {
+        let str = value ? "Yes" : "No"
+        return (value) ? this.style(str, "green") : 
+          this.style(str, "red")
+      }
+    },
+    {
+      value: "logic"
+    },
+    {
+      value: "type",
+      width: 30
+    },
+    {
+      value: "message"
+    },
+    {
+      value: "lowRange",
+      width: 20,
+      alias: "Low Range"
+    },
+    {
+      value: "highRange",
+      width: 20,
+      alias: "High Range"
+    }
+  ]
 
-  ///// testing
-  
+  let tTable = ttyTable(header, specData, options).render();
+  console.log(tTable);
 
-  console.log(specData);
 
 }
 

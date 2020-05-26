@@ -2,44 +2,45 @@
  * Field Name VS CA Label Name
 ***************************************************/
 
-/*eslint-env node*/
+// /*eslint-env node*/
 
-// This matches field names out of the logic labels. 
-const patternForFirstFieldName = /(?<=(.* - ))\w*(?=_)/g 
+function matchFieldLogicLabel(dbData, isCheckpoint = false) {
+  // console.log(argsArr)
+  const resultsArr = []
 
+  // for each object, if there is ca, store the result of the checkLogicLabelField(), 
+  dbData.forEach((dbObject) => {
+    if (dbObject.ca) { 
 
-/**
- * Finds discrepancies between the field name in the field column and the logic label field name. Posts results to the console.
- * @param {json} databaseData - the "standard format" database json
- */
-function matchFieldNames(databaseData) {
-  const resultsArr = [];
-
-  databaseData.forEach((field, i) => {
-    const fieldName = field["Field Name"];
-    const fieldCA = field["Conditional Actions"];
-    const logicLabelFieldNames = fieldCA.match(patternForFirstFieldName);
-    // console.log(i, fieldName, logicLabelFieldNames); // logs all fields and logic lables, used for reference
-
-    // TODO This could be greatly improved to first use a console table. Second, to return two sets of results, the first being a list of names that don't have a proper logic type tag, but their field name might match; and second being those that actually have a problem with the logic lable field name. Also, there needs to be provision for the possibility that both of these errors occured, so if there is a lable with both problems it should apear on both lists
-
-    // populates resultsArr with each finding of (label name !== field name)
-    if (logicLabelFieldNames !== null) {
-      logicLabelFieldNames.forEach(logicLableFieldName => {
-        if (logicLableFieldName !== fieldName) {
-          resultsArr.push(`Field #${i+1}: ${fieldName} does not match ${logicLableFieldName}`);
-          // TODO: This message could be improved to show what the original logic label was.
-        }
-      });
+      // checkLogicLabelField() returns object if the field and logic label don't match.
+      const result = dbObject.checkLogicLabelField(); 
+      
+      // filters blank fields and not matching 'Field Name' prevents headers for normalized embeded log from populating results
+      if (result.field && result.field !== 'Field Name' ) {
+        resultsArr.push(result);
+      }
     }
+    
   });
-  
-  // populates resultsArr with a message if no mismatch results are found
-  if (resultsArr.length < 1) {resultsArr.push("No results were found!")}
 
-  console.log(resultsArr);
+
+  //// RESULTS 
+
+  // if there are results (results array greater than 0), then fail the checkpoint or give results, depending on if in checkpoint mode or not.
+  if (resultsArr.length > 0) {
+
+    // if in checkpoint mode, throw an error if this test didn't pass the checkpoint.
+    if (isCheckpoint) {throw Error("Field and logic label mismatch")}
+    
+    // results, not in checkpoint mode
+    console.table(resultsArr, ["field", "logicLabelField"]);
+  } else {
+    if (isCheckpoint) {return true} // results for checkpoint mode
+    console.log(`There are no results!`); // not in checkpoint mode
+  }
+  
 }
 
 // Export 
-module.exports.run = matchFieldNames;
+module.exports.run = matchFieldLogicLabel;
 

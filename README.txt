@@ -1,29 +1,30 @@
 
+Process to Prepare File
+- Database
+  - Downloaded the Data Dictionary in Excel format.
+  - Opened file, deleted first row if needed. The first row MUST be the main headers for that column.
+  - Saved as CSV
+  - Store Database CSV in Data_To_Validate folder and add reference to it in the file_reference.json document.
+- Spec
+  - Download the spec as a CVS. 
+  - Opened file, deleted first row if needed. The first row MUST be the main headers for that column.
+  - Store Spec CSV in Data_To_Validate folder and add reference to it in the file_reference.json document.
+- Open the terminal and navigate to the "validation_automation_tool" file. 
+- Type "node app.js [command]". See commands below to run.
 
-Process so far:
-Prepare file
-⁃ Downloaded the Data Dictionary in Excel format.
-⁃ Opened file, deleted first row if needed. The first row MUST be the main headers for that column.
-⁃ Saved as CSV
-- Store CSV in Data_To_Validate folder and add reference to it in the file_reference.json document.
+Commands:
+  - Run "ra" to Run All > Pass all those tests, then run tests listed in the pass message
+  - Run "db" or "spec" to see their respective tables
+  - Run "apps" to see a list of all the apps and descriptions (most of these are run in the "ra" command)
+  - Each app has it's own command to run it separately, which is listed in the description
+ 
 
 
-** VALIDATION TOOLS **
-
-Here is a list of each validation tool, as well as a brief discription and user instructions.
-
-Compaire DB Field Names with Lable Names
-- Argument: matchFeldNamesLabelNames
-- Files used: DB only
-- Discription: Compaires the field name within the field name column to the field name within the logic lable. 
-- Notes: It's possible the "Field #" portion of results may be off, these are for reference to try to help the user find the field quickly.
-
-
-** STANDARD FORMAT **
+** ABOUT THE STANDARD FORMAT **
 
 THE SPEC
 - Based off ClinicalStudios
-Below are the header rows for the spec CSV. These are the defults from clenical studios, but they've been recorded here. These headers must make up the first row, the header row. They can be in any order.
+Below are the header rows for the spec CSV. These are the defaults from clinical studios, but they've been recorded here. These headers must make up the first row, the header row. They can be in any order.
 [
   Field,
   Description,
@@ -41,7 +42,7 @@ Below are the header rows for the spec CSV. These are the defults from clenical 
 
 THE DATABASE (AKA DATA DICTIONARY)
 - Based off ClinicalStudios
-Below are the header rows for the database CSV. These are the defults from clenical studios, but they've been recorded here. These headers must make up the first row, the header row. They can be in any order.
+Below are the header rows for the database CSV. These are the defaults from clinical studios, but they've been recorded here. These headers must make up the first row, the header row. They can be in any order.
 [
   Field Name,
   Field Label,
@@ -56,10 +57,5 @@ Below are the header rows for the database CSV. These are the defults from cleni
 ]
 
 
-
-** BEST USE **
-Order To Use
-Here is a recommended order to run the apps:
- 1) checkSpecDBFieldNames
-  - This checks that the spec field names match the names in the database and vice-versa. Fixing this helps with future apps. 
-   - It is recommended that this is run first, findings addressed in spec, and rather than waiting for developer to change the spec so you can move forward using the other tools, just update the CSV file and highlight that cell to indicate that there was a change made. DON'T CHANGE THE CVS UNTIL YOU WRITE YOUR FIDINGS AND MAKE NOTES OF YOUR CHANGES
+** KNOWN BUGS **
+- When there is error thrown during an "ra" run, the console.log messages that accompany the error might get thrown twice since the Run All function runs each checkpoint twice. Example can be replicated by having the database field have no message but the spec has a message. There is an error set up to catch this but it runs twice in Run All mode. 
