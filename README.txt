@@ -1,3 +1,16 @@
+# Validation Helper
+
+## About 
+
+This project is no longer being maintained. 
+
+The concept of the tool is to take two CSV files that have been exported from specific software, compare them, and provide feedback on a number of possible problems that you can then go investigate. I built this to help with FUEL Studios validation.
+
+This tool worked great but could only run in the command line. To use the tool directly in Google Sheets, I've taken this project and built a Google Apps Script Add-On out of it.
+
+This CLI version has been archived and is no longer in use. 
+
+## Usage
 
 Process to Prepare File
 - Database
@@ -58,4 +71,4 @@ Below are the header rows for the database CSV. These are the defaults from clin
 
 
 ** KNOWN BUGS **
-- When there is error thrown during an "ra" run, the console.log messages that accompany the error might get thrown twice since the Run All function runs each checkpoint twice. Example can be replicated by having the database field have no message but the spec has a message. There is an error set up to catch this but it runs twice in Run All mode. 
+- When there is error thrown during an "ra" run, the console.log messages that accompany the error might get thrown twice since the Run All function runs each checkpoint twice. Example can be replicated by having the database field have no message but the spec has a message. There is an error set up to catch this, but it runs twice in Run All mode. 
